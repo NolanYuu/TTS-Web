@@ -1,0 +1,31 @@
+<!-- home.html -->
+<input id="input" type="text" />
+<button onclick="send()">Send</button>
+<pre id="output"></pre>
+<script>
+    var input = document.getElementById("input");
+    var output = document.getElementById("output");
+    var socket = new WebSocket("ws://" + document.location.host + "/ws");
+
+    socket.onopen = function () {
+        output.innerHTML += "Status: Connected\n";
+    };
+
+    socket.onmessage = function (e) {
+        output.innerHTML += "Server: " + e.data + "\n";
+    };
+
+    function send() {
+        var tts_request = JSON.stringify({
+            "text": input.value, 
+            "language": "en", 
+            "speaker": "lj_0", 
+            "sample_rate": 22050, 
+            "format": "wav", 
+            "volume": 1.0, 
+            "speed": 1.0
+        })
+        socket.send(tts_request);
+        input.value = "";
+    }
+</script>
